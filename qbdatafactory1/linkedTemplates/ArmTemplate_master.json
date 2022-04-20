@@ -7,18 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "qbdatafactory1"
 		},
-		"AzureBlobStorage1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
-		},
-		"AzureBlobStorageConnection2_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageConnection2'"
-		},
-		"AzureDataLakeStorage1_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
-		},
 		"adls_qbstorageaccount1_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls_qbstorageaccount1'"
@@ -26,10 +14,6 @@
 		"linktoqbblobstorageaccount2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linktoqbblobstorageaccount2'"
-		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://qbstorageaccount1.dfs.core.windows.net"
 		},
 		"adls_qbstorageaccount1_properties_typeProperties_url": {
 			"type": "string",
@@ -62,23 +46,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"AzureBlobStorage1_connectionString": {
-						"value": "[parameters('AzureBlobStorage1_connectionString')]"
-					},
-					"AzureBlobStorageConnection2_connectionString": {
-						"value": "[parameters('AzureBlobStorageConnection2_connectionString')]"
-					},
-					"AzureDataLakeStorage1_accountKey": {
-						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
-					},
 					"adls_qbstorageaccount1_accountKey": {
 						"value": "[parameters('adls_qbstorageaccount1_accountKey')]"
 					},
 					"linktoqbblobstorageaccount2_connectionString": {
 						"value": "[parameters('linktoqbblobstorageaccount2_connectionString')]"
-					},
-					"AzureDataLakeStorage1_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
 					"adls_qbstorageaccount1_properties_typeProperties_url": {
 						"value": "[parameters('adls_qbstorageaccount1_properties_typeProperties_url')]"
