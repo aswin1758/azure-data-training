@@ -1,0 +1,30 @@
+{
+	"name": "productdata_processed_1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adls_qbstorageaccount1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "product-data",
+				"fileSystem": "adls-data-target-container"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	}
+}
