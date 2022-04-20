@@ -1,0 +1,7 @@
+{
+	"name": "on-prem-to-adls-ir",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "Integration run time for copying data from local to adls"
+	}
+}
