@@ -266,54 +266,6 @@
 											"type": "String",
 											"physicalType": "String"
 										}
-									},
-									{
-										"source": {
-											"name": "email",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "email",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "state",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "state",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "country",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "country",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "phone",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "phone",
-											"type": "String",
-											"physicalType": "String"
-										}
 									}
 								],
 								"typeConversion": true,
