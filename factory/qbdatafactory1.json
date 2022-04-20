@@ -1,0 +1,9 @@
+{
+	"name": "qbdatafactory1",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "99867702-88e2-4fb5-95a8-ec06c0a9f0c3",
+		"tenantId": "940e1b96-846e-484d-b44b-7be497b84507"
+	}
+}
