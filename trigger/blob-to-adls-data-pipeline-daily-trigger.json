@@ -1,0 +1,34 @@
+{
+	"name": "blob-to-adls-data-pipeline-daily-trigger",
+	"properties": {
+		"description": "triggers copy of user and product data from blob storage to data lake",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "blob-to-adls-data-pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-04-20T08:25:00Z",
+				"endTime": "2022-04-23T08:25:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						0
+					]
+				}
+			}
+		}
+	}
+}
