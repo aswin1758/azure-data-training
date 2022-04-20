@@ -5,7 +5,14 @@
 			{
 				"name": "copy-user-data",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "copy-product-data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.00:30:00",
 					"retry": 1,
