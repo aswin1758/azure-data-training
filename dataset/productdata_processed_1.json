@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "processed.csv",
 				"folderPath": "product-data",
 				"fileSystem": "adls-data-target-container"
 			},
