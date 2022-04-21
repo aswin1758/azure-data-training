@@ -1,7 +1,0 @@
-{
-	"name": "on-prem-to-adls-data-pipeline",
-	"properties": {
-		"description": "Copy data from on prem postgres server to datalake",
-		"annotations": []
-	}
-}
