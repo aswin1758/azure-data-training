@@ -1,0 +1,7 @@
+{
+	"name": "postgres-to-adls-data-pipeline",
+	"properties": {
+		"description": "Copy user and product data from Postgres db to adls",
+		"annotations": []
+	}
+}
