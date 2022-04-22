@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "userdata_1_fetch_flow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

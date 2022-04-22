@@ -1,7 +1,33 @@
 {
 	"name": "postgres-to-adls-data-pipeline",
 	"properties": {
-		"description": "Copy user and product data from Postgres db to adls",
+		"description": "Copy user and product data from cs  to adls with data mask",
+		"activities": [
+			{
+				"name": "copy-user-data",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:05:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "userdata_1_fetch_flow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
 		"annotations": []
 	}
 }
