@@ -1,0 +1,16 @@
+{
+	"name": "userdata2_postgre",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "link_qb_postgresdb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "PostgreSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "public",
+			"table": "users"
+		}
+	}
+}
