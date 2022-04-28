@@ -12,10 +12,18 @@
 					"name": "orderSource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "processed_order_data_set",
+						"type": "DatasetReference"
+					},
+					"name": "orderDataTarget"
+				}
+			],
 			"transformations": [
 				{
-					"name": "filter1"
+					"name": "filterByDate"
 				}
 			],
 			"scriptLines": [
@@ -34,9 +42,29 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     moveFiles: ['orders','processed_orders'],",
-				"     wildcardPaths:['adls-order-data-source/orders/*']) ~> orderSource",
-				"orderSource filter(isDate(Timestamp,toString(currentDate()))) ~> filter1"
+				"     moveFiles: ['orders','processed_orders']) ~> orderSource",
+				"orderSource filter(isDate(Timestamp,toString(currentDate()))) ~> filterByDate",
+				"filterByDate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          OrderId as string,",
+				"          UserId as string,",
+				"          ProductId as string,",
+				"          Price as string,",
+				"          Quantity as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          OrderId,",
+				"          UserId,",
+				"          ProductId,",
+				"          Price,",
+				"          Quantity",
+				"     )) ~> orderDataTarget"
 			]
 		}
 	}
