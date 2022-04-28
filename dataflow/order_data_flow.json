@@ -1,0 +1,43 @@
+{
+	"name": "order_data_flow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "order_data_set",
+						"type": "DatasetReference"
+					},
+					"name": "orderSource"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderId as string,",
+				"          UserId as string,",
+				"          Timestamp as string,",
+				"          ProductId as string,",
+				"          ProductName as string,",
+				"          Price as string,",
+				"          Brand as string,",
+				"          Category as string,",
+				"          Variant as string,",
+				"          Quantity as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     moveFiles: ['orders','processed_orders'],",
+				"     wildcardPaths:['adls-order-data-source/orders/*']) ~> orderSource",
+				"orderSource filter(isDate(Timestamp,toString(currentDate()))) ~> filter1"
+			]
+		}
+	}
+}
