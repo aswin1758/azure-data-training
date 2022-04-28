@@ -8,6 +8,9 @@
 		"adls_qbstorageaccount1_accountKey": {
 			"value": ""
 		},
+		"link_qb_postgresdb_connectionString": {
+			"value": ""
+		},
 		"linktoqbblobstorageaccount2_connectionString": {
 			"value": ""
 		},

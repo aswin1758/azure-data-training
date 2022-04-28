@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'adls_qbstorageaccount1'"
 		},
+		"link_qb_postgresdb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'link_qb_postgresdb'"
+		},
 		"linktoqbblobstorageaccount2_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linktoqbblobstorageaccount2'"
@@ -239,6 +243,137 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/lake-to-adls-data-pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Copy user and product data from cs  to adls with data mask",
+				"activities": [
+					{
+						"name": "order_data_flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "order_data_flow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"orderSource": {},
+									"orderDataTarget": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/order_data_flow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/productdata_processed_1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adls_qbstorageaccount1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "processed.csv",
+						"folderPath": "product-data",
+						"fileSystem": "adls-data-target-container"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adls_qbstorageaccount1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/productdatasource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "linktoqbblobstorageaccount2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "products.csv",
+						"container": "source-blob-container"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/linktoqbblobstorageaccount2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/userdata1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -339,6 +474,20 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/link_qb_postgresdb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked service for postgres db",
+				"annotations": [],
+				"type": "PostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('link_qb_postgresdb_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/linktoqbblobstorageaccount2')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -352,54 +501,95 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/productdatasource1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/on-prem-to-adls-ir')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "linktoqbblobstorageaccount2",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
+				"type": "SelfHosted",
+				"description": "Integration run time for copying data from local to adls",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/order_data_flow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "products.csv",
-						"container": "source-blob-container"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "order_data_set",
+								"type": "DatasetReference"
+							},
+							"name": "orderSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "processed_order_data_set",
+								"type": "DatasetReference"
+							},
+							"name": "orderDataTarget"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filterByDate"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          OrderId as string,",
+						"          UserId as string,",
+						"          Timestamp as string,",
+						"          ProductId as string,",
+						"          ProductName as string,",
+						"          Price as string,",
+						"          Brand as string,",
+						"          Category as string,",
+						"          Variant as string,",
+						"          Quantity as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     moveFiles: ['orders','processed_orders']) ~> orderSource",
+						"orderSource filter(isDate(Timestamp,toString(currentDate()))) ~> filterByDate",
+						"filterByDate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          OrderId as string,",
+						"          UserId as string,",
+						"          ProductId as string,",
+						"          Price as string,",
+						"          Quantity as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          OrderId,",
+						"          UserId,",
+						"          ProductId,",
+						"          Price,",
+						"          Quantity",
+						"     )) ~> orderDataTarget"
+					]
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/linktoqbblobstorageaccount2')]"
+				"[concat(variables('factoryId'), '/datasets/order_data_set')]",
+				"[concat(variables('factoryId'), '/datasets/processed_order_data_set')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/productdata_processed_1')]",
+			"name": "[concat(parameters('factoryName'), '/order_data_set')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -412,9 +602,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "processed.csv",
-						"folderPath": "product-data",
-						"fileSystem": "adls-data-target-container"
+						"folderPath": "orders",
+						"fileSystem": "adls-order-data-source"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -423,9 +612,43 @@
 				},
 				"schema": [
 					{
+						"name": "OrderId",
 						"type": "String"
 					},
 					{
+						"name": "UserId",
+						"type": "String"
+					},
+					{
+						"name": "Timestamp",
+						"type": "String"
+					},
+					{
+						"name": "ProductId",
+						"type": "String"
+					},
+					{
+						"name": "ProductName",
+						"type": "String"
+					},
+					{
+						"name": "Price",
+						"type": "String"
+					},
+					{
+						"name": "Brand",
+						"type": "String"
+					},
+					{
+						"name": "Category",
+						"type": "String"
+					},
+					{
+						"name": "Variant",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
 						"type": "String"
 					}
 				]
@@ -435,43 +658,52 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/blob-to-adls-data-pipeline-daily-trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
+			"name": "[concat(parameters('factoryName'), '/processed_order_data_set')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "triggers copy of user and product data from blob storage to data lake",
+				"linkedServiceName": {
+					"referenceName": "adls_qbstorageaccount1",
+					"type": "LinkedServiceReference"
+				},
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "blob-to-adls-data-pipeline",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
+				"type": "DelimitedText",
 				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2022-04-20T08:25:00Z",
-						"endTime": "2022-04-23T08:25:00Z",
-						"timeZone": "UTC",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								0
-							]
-						}
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "order-data",
+						"fileSystem": "adls-data-target-container"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "OrderId",
+						"type": "String"
+					},
+					{
+						"name": "UserId",
+						"type": "String"
+					},
+					{
+						"name": "ProductId",
+						"type": "String"
+					},
+					{
+						"name": "Price",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
+						"type": "String"
 					}
-				}
+				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/blob-to-adls-data-pipeline')]"
+				"[concat(variables('factoryId'), '/linkedServices/adls_qbstorageaccount1')]"
 			]
 		}
 	]
